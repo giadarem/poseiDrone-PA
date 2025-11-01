@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        
+        // --- BASELINE E USCITA ---
+        "target": "ESNext",         // Specifica la versione di output del JavaScript.
+        "module": "commonjs",       // Definisce il sistema di moduli di output come CommonJS (necessario per Node/Express).
+        "rootDir": "./src",         // Cartella radice dei file sorgente (.ts).
+        "outDir": "./dist",         // Cartella di destinazione per i file JavaScript compilati (per Docker).
+        
+        // --- INTEROPERABILITÀ E SICUREZZA ---
+        "esModuleInterop": true,    // Facilita l'uso della sintassi 'import' moderna con i moduli Node.js più vecchi (CommonJS).
+        "strict": true,             // Abilita tutte le regole di type-checking rigorose per la massima sicurezza del codice.
+        "skipLibCheck": true,       // Ignora il controllo dei tipi nelle librerie di terze parti (velocizza la compilazione).
+        "forceConsistentCasingInFileNames": true, // Forza la coerenza dei nomi dei file (importante per Docker/Linux).
+        
+        // --- CONFIGURAZIONI AGGIUNTIVE ---
+        "allowJs": true,            // Permette l'inclusione di file JavaScript (.js) nel progetto.
+        "checkJs": false            // Disabilita il controllo dei tipi sui file JavaScript (se allowJs è attivo).
+    },
+    // Quali file devono essere inclusi nel processo di compilazione
+     "include": ["src"],
+    // Quali cartelle/file devono essere ignorati dal compilatore
+    "exclude": [
+        "node_modules"
+    ]
+}
