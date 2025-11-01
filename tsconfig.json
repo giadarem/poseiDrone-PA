@@ -6,7 +6,8 @@
         "module": "commonjs",       // Definisce il sistema di moduli di output come CommonJS (necessario per Node/Express).
         "rootDir": "./src",         // Cartella radice dei file sorgente (.ts).
         "outDir": "./dist",         // Cartella di destinazione per i file JavaScript compilati (per Docker).
-        
+        "allowSyntheticDefaultImports": true,
+
         // --- INTEROPERABILITÀ E SICUREZZA ---
         "esModuleInterop": true,    // Facilita l'uso della sintassi 'import' moderna con i moduli Node.js più vecchi (CommonJS).
         "strict": true,             // Abilita tutte le regole di type-checking rigorose per la massima sicurezza del codice.

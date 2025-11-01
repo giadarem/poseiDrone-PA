@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import DatabaseConnection, { runSqlMigrations } from "./db/connection";
 import baseRoute from "./routes/baseRoute";
-
+import authRoute from "./routes/authRoute";
 dotenv.config();
 
 const app = express();
@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(baseRoute);
+app.use(authRoute);  
 
 const startServer = async () => {
   try {
