@@ -1,35 +1,40 @@
-version: '3.8' # Versione del formato Compose.
+# docker-compose.yml
+version: '3.8'
 
 services:
-  # 1. SERVIZIO DATABASE: 'db' (PostGIS)
+  # 1. SERVIZIO DATABASE (PostgreSQL)
   db:
-    image: postgis/postgis:16-3.4 # Immagine ufficiale che include PostgreSQL 16 e PostGIS 3.4.
-    container_name: droni_marini_db # Nome fisso del container per un facile debug.
-    restart: always # Riavvia automaticamente il container in caso di fallimento.
+    image: postgis/postgis:16-3.4 # Immagine ufficiale del DB (leggera) che implementa postgis
+    container_name: drone_marino_db
+    restart: always
     environment:
-      # Variabili lette dal file .env per configurare PostgreSQL.
+      # Variabili DB lette dal file .env
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
+    # Porta esposta per accedere al DB dall'esterno (es. con un tool)
     ports:
-      - "5432:5432" # Espone la porta del DB (5432) sulla macchina host.
+      - "5432:5432" 
+    # Mantiene i dati del database persistenti
     volumes:
-      # Mantiene i dati del DB persistenti anche se il container viene rimosso.
-      - postgres_data:/var/lib/postgresql/data 
+      - postgres_data:/var/lib/postgresql/data
 
-  # 2. SERVIZIO APPLICAZIONE: 'app' (Node.js/Express)
+  # 2. SERVIZIO APPLICAZIONE (Node.js/Express)
   app:
     build: 
-      context: . # Costruisce l'immagine a partire dal Dockerfile nella directory corrente.
-    container_name: droni_marini_app # Nome fisso del container Express.
+      context: . # Usa il Dockerfile che hai già creato
+    container_name: drone_marino
     restart: always
+    # Mappa la porta locale 3000 alla porta del container 3000
     ports:
-      - "3000:3000" # Mappa la porta dell'applicazione (3000) sull'host.
+      - "3000:3000" 
+    # Dipende dal DB per avviarsi dopo
     depends_on:
-      - db # Garantisce che il container DB sia avviato prima di tentare di avviare il backend.
+      - db
+    # Passa tutte le variabili del file .env all'interno del container 'app'
     env_file:
-      - ./.env # Inietta tutte le variabili d'ambiente del file .env nel container.
+      - ./.env
     
-# DEFINIZIONE DEI VOLUMI NOMINATI
+# Volume per la persistenza dei dati del DB
 volumes:
-  postgres_data: # Volume nominato per la persistenza dei dati del database PostGIS.
+  postgres_data:
