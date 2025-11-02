@@ -1,18 +1,16 @@
--- =========================================================
+
 -- Estensioni PostGIS e UUID
--- =========================================================
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS postgis;
 
--- =========================================================
+
 -- ENUM CUSTOM TYPES
--- =========================================================
+
 CREATE TYPE user_ruolo AS ENUM ('Utente', 'Operatore', 'Amministratore');
 CREATE TYPE request_status AS ENUM ('pending', 'accepted', 'rejected', 'cancelled');
 
--- =========================================================
--- 1️⃣ USERS (utenti + credito)
--- =========================================================
+
+-- USERS (utenti + credito)
 CREATE TABLE "users" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "email" VARCHAR(255) NOT NULL UNIQUE,
@@ -23,9 +21,7 @@ CREATE TABLE "users" (
     "updatedAt" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
--- =========================================================
--- 2️⃣ FORBIDDEN AREAS (Aree vietate)
--- =========================================================
+-- FORBIDDEN AREAS 
 CREATE TABLE "forbiddenAreas" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "boundingBox" GEOMETRY(Polygon, 4326) NOT NULL,
@@ -36,7 +32,7 @@ CREATE TABLE "forbiddenAreas" (
     "updatedAt" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
--- 🔗 Relazione: ogni forbiddenArea può essere creata da un operatore
+-- Relazione: ogni forbiddenArea può essere creata da un operatore
 ALTER TABLE "forbiddenAreas"
 ADD CONSTRAINT fk_forbiddenareas_operator
 FOREIGN KEY ("operatorId") REFERENCES "users"("id")
@@ -46,9 +42,8 @@ ON UPDATE CASCADE;
 -- Indice spaziale
 CREATE INDEX idx_forbidden_areas_geom ON "forbiddenAreas" USING GIST ("boundingBox");
 
--- =========================================================
--- 3️⃣ NAVIGATION PLAN (Richieste di navigazione)
--- =========================================================
+
+-- NAVIGATION PLAN (Richieste di navigazione)
 CREATE TABLE "navigationPlan" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "userId" UUID NOT NULL,
@@ -64,7 +59,7 @@ CREATE TABLE "navigationPlan" (
     "updatedAt" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
--- 🔗 Relazione: ogni piano di navigazione appartiene a un utente
+-- Relazione: ogni piano di navigazione appartiene a un utente
 ALTER TABLE "navigationPlan"
 ADD CONSTRAINT fk_navigationplan_user
 FOREIGN KEY ("userId") REFERENCES "users"("id")

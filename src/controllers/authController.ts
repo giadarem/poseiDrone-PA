@@ -1,6 +1,5 @@
 /**
- * AuthController
- * ---------------
+ * 
  * Gestisce l'autenticazione degli utenti:
  * - Login e generazione del token JWT
  * - Recupero delle informazioni dell'utente autenticato (/auth/me)

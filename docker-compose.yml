@@ -18,7 +18,7 @@ services:
     # Mantiene i dati del database persistenti
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
+      - ./src/db/init:/docker-entrypoint-initdb.d:ro
   # 2. SERVIZIO APPLICAZIONE (Node.js/Express)
   app:
     build: 

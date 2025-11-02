@@ -1,8 +1,7 @@
--- ===========================================
--- 02_seed_users.sql
+
 -- Inserisce utenti di esempio
 -- Le password sono hashate con bcrypt (usa valori reali!)
--- ===========================================
+
 
 INSERT INTO users (email, password_hash, ruolo, token_residui)
 VALUES

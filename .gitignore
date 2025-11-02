@@ -4,3 +4,5 @@
 node_modules/
 dist/
 logger/logs
+/jwt_keys/*.key       
+/jwt_keys/*.pub
