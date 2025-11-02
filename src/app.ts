@@ -14,10 +14,10 @@ app.use(authRoute);
 
 const startServer = async () => {
   try {
-    // 🔹 Inizializza la connessione al DB
+    // Inizializza la connessione al DB
     DatabaseConnection.getInstance();
 
-    // 🔹 Esegui le migrazioni e il seeding SQL
+    // Esegui le migrazioni e il seeding SQL
     await runSqlMigrations();
 
     app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

@@ -97,7 +97,7 @@ export class UserModel extends Model<UserAttributes, UserCreationAttributes>
         sequelize,
         modelName: "UserModel",
         tableName: "users",
-        timestamps: true,
+        timestamps: false,
         hooks: {
           /**
            * Prima della creazione:
