@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import DatabaseConnection from "./db/connection";
-import baseRoute from "./routes/baseRoute";
+import  baseRoute  from './routes/baseRoute';
 import authRoute from "./routes/authRoute";
 import { errorHandler } from "./middlewares/errorMiddleware";
 import { ErrorFactory, HttpError } from "./factories/errorFactory";
@@ -36,12 +36,8 @@ app.listen(PORT, () => {
   console.log(`Server PoseiDrone avviato su http://localhost:${PORT}`);
 });
 
-/**
- * Registrazione delle rotte
- * - BaseRoute → rotte pubbliche
- * - AuthRoute → autenticazione
- */
-app.use(baseRoute);
+
+app.use("/", baseRoute);
 app.use(authRoute);
 
 /**

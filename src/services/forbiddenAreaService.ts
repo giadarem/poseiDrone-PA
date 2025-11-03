@@ -1,24 +1,34 @@
+// src/services/ForbiddenAreaService.ts
 /**
- * Service per la gestione delle aree vietate.
- * Si occupa di logiche di business aggiuntive (es. validità temporale).
+ * Service Layer per la gestione delle Aree Vietate.
+ * Contiene la logica di orchestrazione per la rotta pubblica GET /.
  */
 
-import { forbiddenAreaDAO } from "../dao/forbiddenAreaDao";
-import { ForbiddenAreaModel } from "../models/forbiddenAreaModel";
+import { ForbiddenAreaDAO, forbiddenAreaDAO } from '../dao/forbiddenAreaDao';
+import { ForbiddenAreaRepository } from '../repositories/forbiddenAreaRepository';
+import { ForbiddenAreaModel } from '../models/forbiddenAreaModel';
+import { ErrorFactory } from '../factories/errorFactory';
+
+// Inizializziamo il Repository qui, collegandolo al DAO
+const forbiddenAreaRepository = new ForbiddenAreaRepository(forbiddenAreaDAO); 
 
 export class ForbiddenAreaService {
-  async getAreeVietateAttive(): Promise<ForbiddenAreaModel[]> {
-    const now = new Date();
-    const all = await forbiddenAreaDAO.findAll();
-    return all.filter(area =>
-      (!area.valid_from || area.valid_from <= now) &&
-      (!area.valid_to || area.valid_to >= now)
-    );
-  }
-
-  async createArea(data: Partial<ForbiddenAreaModel>): Promise<ForbiddenAreaModel> {
-    return await forbiddenAreaDAO.createArea(data);
-  }
+    
+    /**
+     * Metodo per la rotta pubblica (senza autenticazione) che restituisce solo le aree attive.
+     */
+    public async getAreeVietateAttive(): Promise<ForbiddenAreaModel[]> {
+        
+        try {
+            // Chiama il Repository per eseguire la query con il filtro temporale
+            const aree = await forbiddenAreaRepository.getActiveAreas();
+            
+            return aree;
+            
+        } catch (error) {
+            // Se il DB è offline o c'è un errore interno non gestito, solleva 500
+            throw ErrorFactory.createError("Impossibile recuperare le aree dal database.", 500);
+        }
+    }
 }
-
 export const forbiddenAreaService = new ForbiddenAreaService();

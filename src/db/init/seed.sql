@@ -11,3 +11,14 @@ VALUES
   ('operatore@example.com', '$2b$10$PR6KrW2YV76VFYRBrOis2O7Z4YAPzCgxReaXol8lqeh8hP7kPq3QS', 'Operatore', 0),
   -- pw: user123
   ('utente@example.com', '$2b$10$KbUTPv36U0dcftfVkNIPQ.V5vYryFcq6RJajhA/bADms7suyhRUV2', 'Utente', 10);
+
+INSERT INTO "forbiddenAreas" ("boundingBox", "validFrom", "validTo", "operatorId")
+VALUES (
+  ST_GeomFromText(
+    'POLYGON((13.505 43.62, 13.520 43.62, 13.520 43.63, 13.505 43.63, 13.505 43.62))',
+    4326
+  ),
+  NOW(),          -- validFrom: attiva da subito
+  NULL,           -- validTo: senza scadenza
+  (SELECT id FROM "users" WHERE ruolo = 'Operatore' LIMIT 1) -- assegna l’operatore creato nel seed utenti
+);
