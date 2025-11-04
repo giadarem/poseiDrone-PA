@@ -9,7 +9,7 @@ const controller = new AuthController();
  * POST /auth/login
  * Body: { email, password }
  */
-router.post("/auth/login", controller.login);
+router.post("/login", controller.login);
 
 /**
  * GET /auth/me

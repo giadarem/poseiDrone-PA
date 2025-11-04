@@ -7,11 +7,11 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "./appError";
+import { HttpError  } from "./httpError";
 
 export function errorHandler(err: Error, _req: Request, res: Response, _next: NextFunction) {
   // Se l'errore è di tipo AppError, è un errore previsto
-  if (err instanceof AppError) {
+  if (err instanceof HttpError ) {
     return res.status(err.statusCode).json({
       status: "error",
       message: err.message,

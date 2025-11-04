@@ -1,66 +1,33 @@
+import "dotenv/config";
 import express from "express";
-import dotenv from "dotenv";
-import DatabaseConnection from "./db/connection";
-import  baseRoute  from './routes/baseRoute';
-import authRoute from "./routes/authRoute";
-import { errorHandler } from "./middlewares/errorMiddleware";
-import { ErrorFactory, HttpError } from "./factories/errorFactory";
+import cors from "cors";
+import morgan from "morgan";
 
-/**
- * App principale PoseiDrone
- * --------------------------
- * Inizializza Express, la connessione al database e registra le rotte definite per il progetto.
- * Gestisce centralmente gli errori e le rotte non trovate.
- */
+import DatabaseConnection, { runSqlMigrations } from "./db/connection";
+import authRoutes from "./routes/authRoute";
+import navigationPlanRoutes from "./routes/navigationPlanRoute";
 
 const app = express();
-const PORT: string = process.env.APP_PORT || "3000";
-
-// Carica variabili d'ambiente
-dotenv.config();
-
-/**
- * Middleware per parsing JSON
- */
+app.use(cors());
 app.use(express.json());
+app.use(morgan("dev"));
 
-/**
- * Inizializza connessione al database (Singleton)
- */
-DatabaseConnection.getInstance();
+// Inizializza il DB e i modelli
+(async () => {
+  try {
+    await runSqlMigrations();          // esegue SQL di setup
+    DatabaseConnection.getInstance();  // inizializza UserModel e NavigationPlanModel
+    console.log(" Modelli Sequelize inizializzati");
+  } catch (err) {
+    console.error("Errore inizializzazione DB:", err);
+  }
+})();
 
-/**
- * Avvio del server Express
- */
-app.listen(PORT, () => {
-  console.log(`Server PoseiDrone avviato su http://localhost:${PORT}`);
-});
+app.use("/auth", authRoutes);
+app.use("/plans", navigationPlanRoutes);
+app.use("/plans/show", navigationPlanRoutes);
+app.use(navigationPlanRoutes);
+app.get("/", (req, res) => res.send("API PoseiDrone attiva"));
 
-
-app.use("/", baseRoute);
-app.use(authRoute);
-
-/**
- * Rotta di base (test disponibilità API)
- */
-app.get("/", (_req, res) => {
-  res.send("API PoseiDrone attiva");
-});
-
-/**
- * Middleware per gestire rotte non trovate (404)
- * Usa ErrorFactory per creare un errore HttpError tipizzato.
- */
-app.use((req, _res, next) => {
-  const msg: string = `Rotta ${req.originalUrl} non trovata`;
-  const error: HttpError = ErrorFactory.notFound(msg);
-  next(error);
-});
-
-/**
- * Middleware globale di gestione errori
- * Deve essere registrato dopo tutte le rotte
- */
-app.use(errorHandler);
-
-export default app;
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Server in ascolto su http://localhost:${port}`));

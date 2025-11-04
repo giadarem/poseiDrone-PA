@@ -12,6 +12,11 @@ VALUES
   -- pw: user123
   ('utente@example.com', '$2b$10$KbUTPv36U0dcftfVkNIPQ.V5vYryFcq6RJajhA/bADms7suyhRUV2', 'Utente', 10);
 
+INSERT INTO users (id, email, password_hash, ruolo, token_residui)
+VALUES ('00000000-0000-0000-0000-000000000000', 'test@example.com', 'hash_fittizio', 'Utente', 100)
+ON CONFLICT DO NOTHING;
+
+
 INSERT INTO "forbiddenAreas" ("boundingBox", "validFrom", "validTo", "operatorId")
 VALUES (
   ST_GeomFromText(

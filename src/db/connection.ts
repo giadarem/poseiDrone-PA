@@ -11,7 +11,8 @@ import { Sequelize, Dialect } from "sequelize";
 import fs from "fs";
 import path from "path";
 import { UserModel } from "../models/userModel";
-import { NavigationPlanModel } from "../models/navigationPalnModel";
+import { NavigationPlanModel } from "../models/navigationPlanModel";
+
 
 // Percorsi ai file SQL per migrazioni e seed
 const MIGRATION_PATH = path.join(process.cwd(), "src", "db", "init", "migration.sql");
